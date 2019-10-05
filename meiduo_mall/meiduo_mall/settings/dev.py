@@ -10,10 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
-import os
+import os,sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# 追加项目导包路径
+sys.path.insert(0,os.path.join(BASE_DIR,'apps'))
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,7 +28,7 @@ SECRET_KEY = '_cfgw9g#nf#ypas_4__xw8(jhb0&oh_shso=!q)7(j^=ha18j('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'users.apps.UsersConfig',
+    'verifcations.apps.VerifcationsConfig',
 ]
 
 MIDDLEWARE = [
@@ -102,6 +107,14 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     },
+    "verify_code": { # 验证码
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/2",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    },
+
 }
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "session"
@@ -146,3 +159,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 # 配置静态文件加载路径
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+# 指定用户的模型类
+AUTH_USER_MODEL = 'users.User'
